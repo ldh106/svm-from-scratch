@@ -39,28 +39,22 @@
 
 **Primal Problem (Soft-margin)**
 
-```
-min(w,b,ξ)  1/2‖w‖² + C·Σξ_i
-s.t.        y_i(wᵀx_i + b) ≥ 1 - ξ_i,  ξ_i ≥ 0
-```
+$$\min_{w,b,\xi} \frac{1}{2}\|w\|^2 + C\sum_i \xi_i \quad \text{s.t.}\ \ y_i(w^\top x_i + b) \ge 1-\xi_i,\ \xi_i \ge 0$$
 
 **Dual Problem (SMO가 최적화하는 대상)**
 
-```
-max(α)  Σα_i - 1/2·ΣΣ α_i α_j y_i y_j K(x_i, x_j)
-s.t.    0 ≤ α_i ≤ C,  Σα_i y_i = 0
-```
+$$\max_{\alpha} \sum_i \alpha_i - \frac{1}{2}\sum_i\sum_j \alpha_i \alpha_j y_i y_j K(x_i, x_j) \quad \text{s.t.}\ \ 0 \le \alpha_i \le C,\ \sum_i \alpha_i y_i = 0$$
 
 | 단계 | 수식 | 코드 위치 |
 |---|---|---|
-| 결정 함수 | `f(x) = wᵀx + b` | `decision_function_one()` |
-| 오차 계산 | `E_i = f(x_i) - y_i` | `_E()` |
-| KKT 위반 검사 | `y_iE_i < -tol & α_i<C` 등 | `fit()` 내 if문 |
-| α 허용범위 [L,H] | `y_i≠y_j`/`y_i=y_j` 두 경우 | `fit()` |
-| η 계산 (선형 커널) | `η = 2K_ij - K_ii - K_jj` | `fit()` |
-| α_j 갱신+clip | `α_j_new = α_j - y_j(E_i-E_j)/η` | `fit()` |
-| b 갱신 | `b1, b2` 중 선택/평균 | `fit()` |
-| w 증분 업데이트 | `w += Δα·y·x` | `add_scaled()` |
+| 결정 함수 | $f(x) = w^\top x + b$ | `decision_function_one()` |
+| 오차 계산 | $E_i = f(x_i) - y_i$ | `_E()` |
+| KKT 위반 검사 | $y_iE_i < -\text{tol},\ \alpha_i<C$ 등 | `fit()` 내 if문 |
+| α 허용범위 [L,H] | $y_i\neq y_j$ / $y_i = y_j$ 두 경우 | `fit()` |
+| η 계산 (선형 커널) | $\eta = 2K_{ij} - K_{ii} - K_{jj}$ | `fit()` |
+| α_j 갱신+clip | $\alpha_j^{new} = \alpha_j - \frac{y_j(E_i-E_j)}{\eta}$ | `fit()` |
+| b 갱신 | $b_1, b_2$ 중 선택/평균 | `fit()` |
+| w 증분 업데이트 | $w \mathrel{+}= \Delta\alpha \cdot y \cdot x$ | `add_scaled()` |
 
 모듈 구성: `data_utils.py`(로딩/표준화/평가) · `svm_smo.py`(SMO 핵심 로직) ·
 `main.py`(학습→평가→예측 파이프라인 제어).
@@ -70,9 +64,8 @@ s.t.    0 ≤ α_i ≤ C,  Σα_i y_i = 0
 | 항목 | 결과 |
 |---|---|
 | 학습 정확도 | 93.75% (80개 중 75개 정답) |
-| 혼동행렬 [[TN,FP],[FN,TP]] | [[40, 1], [4, 35]] |
-| w (표준화 공간 기준) | [-2.1806, -0.8220, +0.6995] |
-| b | -0.3426 |
+| 혼동행렬 | $\begin{bmatrix} TN & FP \\ FN & TP \end{bmatrix} = \begin{bmatrix} 40 & 1 \\ 4 & 35 \end{bmatrix}$ |
+| w, b (표준화 공간 기준) | $w=(-2.1806,\ -0.8220,\ 0.6995),\ b=-0.3426$ |
 
 **가중치 해석**
 - 응답 시간(-2.18, 절댓값 최대): 응답이 빠를수록 전환 가능성 ↑
