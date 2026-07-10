@@ -64,8 +64,11 @@ $$\max_{\alpha} \sum_i \alpha_i - \frac{1}{2}\sum_i\sum_j \alpha_i \alpha_j y_i 
 | 항목 | 결과 |
 |---|---|
 | 학습 정확도 | 93.75% (80개 중 75개 정답) |
-| 혼동행렬 | $\begin{bmatrix} TN & FP \\ FN & TP \end{bmatrix} = \begin{bmatrix} 40 & 1 \\ 4 & 35 \end{bmatrix}$ |
 | w, b (표준화 공간 기준) | $w=(-2.1806,\ -0.8220,\ 0.6995),\ b=-0.3426$ |
+
+**혼동행렬**
+
+$$\begin{bmatrix} TN & FP \\ FN & TP \end{bmatrix} = \begin{bmatrix} 40 & 1 \\ 4 & 35 \end{bmatrix}$$
 
 **가중치 해석**
 - 응답 시간(-2.18, 절댓값 최대): 응답이 빠를수록 전환 가능성 ↑
